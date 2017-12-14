@@ -1,0 +1,21 @@
+{
+  "name": "whatsweb",
+  "version": "0.0.1",
+  "description": "Uncovers the technologies used on websites.",
+  "main": "index.js",
+  "author": "M4ster <GeniusM4ster@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/monkeym4ster/WhatsWeb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/monkeym4ster/WhatsWeb/issues"
+  },
+  "bin": {
+    "whatsweb": "./index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "wappalyzer": "^5.2.2"
+  }
+}
