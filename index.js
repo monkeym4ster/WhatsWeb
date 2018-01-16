@@ -1,56 +1,51 @@
-#!/usr/bin/env node
-const Wappalyzer = require('wappalyzer')
-const pkg = require('./package')
+const fs = require('fs')
+const path = require('path')
+const chalk = require('chalk')
+const Promise = require('bluebird')
+const request = require('superagent')
+const { normalUrl } = require('./utils')
 
-const args = process.argv.slice(2)
+class WhatsWeb {
+  constructor (opts) {
+    const { target, timeout, userAgent } = opts
+    this.timeout = timeout || 10000
+    this.url = normalUrl(target)
+    this.userAgent = userAgent
+    return this
+  }
 
-const url = args.shift() || ''
+  async analyse () {
+    try {
+      const { url, timeout, userAgent } = this
+      const basePath = path.resolve(__dirname)
+      const pluginsDir = path.join(basePath, 'plugins')
+      const files = await Promise.promisify(fs.readdir)(pluginsDir)
+      const plugins = files.map( file => path.join(pluginsDir, file))
+      const response = await request.get(url).timeout(timeout).set('Accept', '*/*').set('Accept-Encoding', '').set('user-agent', userAgent).ok(() => true)
 
-if ( !url ) {
-  const helpInfo = `
-  WhatsWeb ${pkg.version}
-
-  Usage: whatsweb [url] [options]
-
-  Options:
-    --debug=0|1             Output debug messages.
-    --delay=ms              Wait for ms milliseconds between requests.
-    --max-depth=num         Don't analyze pages more than num levels deep.
-    --max-urls=num          Exit when num URLs have been analyzed.
-    --max-wait=ms           Wait no more than ms milliseconds for page resources to load.
-    --recursive=0|1         Follow links on pages (crawler).
-    --request-timeout=ms    Wait no more than ms millisecond for the page to load.
-    --user-agent=str        Set the user agent string.`
-  process.stdout.write(helpInfo)
-  process.exit(0)
-}
-
-var options = {}
-var arg
-
-while ( arg = args.shift() ) {
-  var matches = /--([^=]+)=(.+)/.exec(arg)
-
-  if ( matches ) {
-    var key = matches[1].replace(/-\w/g, matches => matches[1].toUpperCase())
-    var value = matches[2]
-
-    options[key] = value
+      const results = []
+      for (const _ of plugins) {
+        const plugin = require(_)
+        const name = plugin.register.attributes.name
+        const result = await plugin.register({ url, timeout, userAgent, response })
+        // 跳过无效结果
+        if (!result || !Object.keys(result).length) continue
+        results.push({ name, result })
+      }
+      return results
+    } catch (err) {
+      return err
+    }
   }
 }
 
-const normalUrl = /^https:?/i.test(url) ? url : `http://${url}`
+module.exports = WhatsWeb
 
-const wappalyzer = new Wappalyzer(normalUrl, options)
-
-wappalyzer.analyze()
-  .then(json => {
-    process.stdout.write(JSON.stringify(json, null, 4) + '\n')
-
-    process.exit(0)
-  })
-  .catch(error => {
-    process.stderr.write(error + '\n')
-
-    process.exit(1)
-  })
+if (require.main === module) {
+  const target = process.argv[2] || 'http://www.freebuf.com'
+  const whatsWeb = new WhatsWeb({ target, timeout: 5000, userAgent: 'Mozilla/5.0' })
+  whatsWeb
+    .analyse()
+    .then(res => console.log(JSON.stringify(res, null, 4)))
+    .catch(err => console.log(err))
+}

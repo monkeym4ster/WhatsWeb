@@ -1,7 +1,7 @@
 {
   "name": "whatsweb",
-  "version": "0.0.1",
-  "description": "Uncovers the technologies used on websites.",
+  "version": "0.1.0",
+  "description": "WhatsWeb",
   "main": "index.js",
   "author": "M4ster <GeniusM4ster@gmail.com>",
   "repository": {
@@ -12,10 +12,17 @@
     "url": "https://github.com/monkeym4ster/WhatsWeb/issues"
   },
   "bin": {
-    "whatsweb": "./index.js"
+    "whatsweb": "whatsweb.js"
   },
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.1",
+    "chalk": "^2.3.0",
+    "commander": "^2.13.0",
+    "geoip-lite": "^1.2.1",
+    "ip": "^1.1.5",
+    "progress": "^2.0.0",
+    "superagent": "^3.8.2",
     "wappalyzer": "^5.2.2"
   }
 }
