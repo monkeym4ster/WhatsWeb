@@ -53,8 +53,10 @@ const main = async () => {
   // 根据 network 生成 IP 段
   if (network) {
     for (const target of targets) {
-      const ipList = await ipGenerator(target, network)
-      targets = targets.concat(ipList)
+      try{
+        const ipList = await ipGenerator(target, network)
+        targets = targets.concat(ipList)
+      } catch (err) {}
     }
   }
 
@@ -88,22 +90,28 @@ const main = async () => {
         // 记录到文件
         if (outputFile) fs.appendFileSync(outputFile, JSON.stringify({target: whatsWeb.url, plugins: data }) + os.EOL)
 
+        // 每一个 item 是一个插件的执行结果，lines 是所有插件执行结果的汇合
+        const _lines = []
         for (const item of data) {
           const { result, name } = item
-          const title = `[ ${chalk.bold(chalk.cyan(name))} ]`
-          const lines = []
+          const nameStr = `[ ${chalk.bold(chalk.cyan(name))} ]`
+          const _line = []
           for (const _ in result) {
             const key = _
             const value = result[_]
-            let line = ''
+            // 插件执行结果拼接的字符串
+            let pluginResult = ''
             // name
-            line += chalk.bold(chalk.white(key)) + ': '
+            pluginResult += chalk.bold(chalk.white(key)) + ': '
             // value
-            line += Array.isArray(value) ? value.join(', ') : value
-            lines.push(line)
+            pluginResult += Array.isArray(value) ? value.join(', ') : value
+            _line.push(pluginResult)
           }
-          bar.interrupt(`${title}\n  ${lines.join('\n  ')}`)
+          const line = _line.join(', ')
+          _lines.push(`${nameStr} ${line}`)
         }
+        const lines = _lines.join('\n')
+        bar.interrupt(`${lines}\n`)
       })
       .catch(function ignore(err) { })
   }, { concurrency })
