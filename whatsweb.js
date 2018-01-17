@@ -73,6 +73,7 @@ const main = async () => {
 
   Promise.map(targets, (target) => {
     const whatsWeb = new WhatsWeb({ target, timeout, userAgent })
+    const highlight = (str) => chalk.bold(chalk.yellow(str))
     return whatsWeb.analyse()
       .then((data) => {
         // 有效数 +1
@@ -104,7 +105,9 @@ const main = async () => {
             // name
             pluginResult += chalk.bold(chalk.white(key)) + ': '
             // value
-            pluginResult += Array.isArray(value) ? value.join(', ') : value
+            const _value = Array.isArray(value) ? value.join(', ') : value
+            // 对于特殊键的值，进行高亮显示
+            pluginResult += ['title'].includes(key) ? highlight(_value) : _value
             _line.push(pluginResult)
           }
           const line = _line.join(', ')
