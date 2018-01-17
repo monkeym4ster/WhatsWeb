@@ -22,6 +22,7 @@ class WhatsWeb {
       const files = await Promise.promisify(fs.readdir)(pluginsDir)
       const plugins = files.map( file => path.join(pluginsDir, file))
       const response = await request.get(url).timeout(timeout).set('Accept', '*/*').set('Accept-Encoding', '').set('user-agent', userAgent).ok(() => true)
+      if (response.status < 200 || response.status > 599) throw new Error(`Status code ${response.status} not in range`)
       this.response = response
 
       const results = []
