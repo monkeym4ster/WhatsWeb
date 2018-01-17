@@ -22,6 +22,7 @@ class WhatsWeb {
       const files = await Promise.promisify(fs.readdir)(pluginsDir)
       const plugins = files.map( file => path.join(pluginsDir, file))
       const response = await request.get(url).timeout(timeout).set('Accept', '*/*').set('Accept-Encoding', '').set('user-agent', userAgent).ok(() => true)
+      this.response = response
 
       const results = []
       for (const _ of plugins) {

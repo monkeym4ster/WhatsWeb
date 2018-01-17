@@ -74,49 +74,56 @@ const main = async () => {
   Promise.map(targets, (target) => {
     const whatsWeb = new WhatsWeb({ target, timeout, userAgent })
     const highlight = (str) => chalk.bold(chalk.yellow(str))
-    return whatsWeb.analyse()
-      .then((data) => {
-        // 有效数 +1
-        if(Array.isArray(data)) valid += 1
-        // 进度条 +1
-        bar.tick({ valid })
-        // 使用了 showError 选项时，记录错误信息。
-        if (!Array.isArray(data)) {
-          if (showError) bar.interrupt(chalk.gray(`[-] Request ${whatsWeb.url} failed. ${data.message}`))
-          return false
-        }
-        // 记录数据
-        bar.interrupt(`[+] WhatsWeb report for ${chalk.bold(chalk.blue(whatsWeb.url))}`)
+    const report = (data) => {
+      // 有效数 +1
+      if(Array.isArray(data)) valid += 1
+      // 进度条 +1
+      bar.tick({ valid })
+      // 使用了 showError 选项时，记录错误信息。
+      if (!Array.isArray(data)) {
+        // 记录错误
+        if (showError) bar.interrupt(chalk.gray(`[-] Request ${whatsWeb.url} failed. ${data.message}`))
+        return false
+      }
 
-        // 记录到文件
-        if (outputFile) fs.appendFileSync(outputFile, JSON.stringify({target: whatsWeb.url, plugins: data }) + os.EOL)
+      // 记录到文件
+      if (outputFile) fs.appendFileSync(outputFile, JSON.stringify({target: whatsWeb.url, plugins: data }) + os.EOL)
 
-        // 每一个 item 是一个插件的执行结果，lines 是所有插件执行结果的汇合
-        const _lines = []
-        for (const item of data) {
-          const { result, name } = item
-          const nameStr = `[ ${chalk.bold(chalk.cyan(name))} ]`
-          const _line = []
-          for (const _ in result) {
-            const key = _
-            const value = result[_]
-            // 插件执行结果拼接的字符串
-            let pluginResult = ''
-            // name
-            pluginResult += chalk.bold(chalk.white(key)) + ': '
-            // value
-            const _value = Array.isArray(value) ? value.join(', ') : value
+      // 每一个 item 是一个插件的执行结果，lines 是所有插件执行结果的汇合
+      const _lines = []
+      for (const item of data) {
+        const { result, name } = item
+        const nameStr = `[ ${chalk.bold(chalk.cyan(name))} ]`
+        const _line = []
+        for (const _ in result) {
+          const key = _
+          const value = result[_]
+          // 插件执行结果拼接的字符串
+          let pluginResult = ''
+          // name
+          pluginResult += chalk.bold(chalk.white(key)) + ': '
+          // value
+          const _value = Array.isArray(value) ? value.join(', ') : value
+          let str = ''
+          // 高亮跳转之后的URL
+          if (key === 'redirect') {
+            if (_value !== whatsWeb.url) str = highlight(_value)
+          } else {
             // 对于特殊键的值，进行高亮显示
-            pluginResult += ['title'].includes(key) ? highlight(_value) : _value
-            _line.push(pluginResult)
+            str = ['title'].includes(key) ? highlight(_value) : _value
           }
-          const line = _line.join(', ')
-          _lines.push(`${nameStr} ${line}`)
+          pluginResult += str
+          _line.push(pluginResult)
         }
-        const lines = _lines.join('\n')
-        bar.interrupt(`${lines}\n`)
-      })
-      .catch(function ignore(err) { })
+        const line = _line.join(', ')
+        _lines.push(`${nameStr} ${line}`)
+      }
+      const lines = _lines.join('\n')
+      // 记录数据
+      bar.interrupt(`[+] WhatsWeb report for ${chalk.bold(chalk.blue(whatsWeb.url))}\n${lines}\n`)
+    }
+    // 记录结果，忽略错误
+    return whatsWeb.analyse().then(report).catch(function ignore(err) { })
   }, { concurrency })
   .then(() => process.exit(0))
 }
