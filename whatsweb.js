@@ -17,7 +17,7 @@ const main = async () => {
     .usage('[options] URLs')
     .description('Identifies websites.')
     .option('-f <file>', 'Targets file path')
-    .option('-c, --concurrency <num>', 'Start specified NUMBER of concurrency', Math.abs, 10)
+    .option('-c, --concurrency <num>', 'Start specified NUMBER of concurrency', Math.abs, 50)
     .option('--network <mask>', 'Scan all Target/MASK hosts')
     .option('--timeout <ms>', 'Max scan minutes for request', Math.abs, 10000)
     .option('--user-agent <string>', 'Custom User-Agent', `Mozilla/5.0 ${Pack.name}/${Pack.version}`)
