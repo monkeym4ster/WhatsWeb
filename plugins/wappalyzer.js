@@ -30,7 +30,7 @@ const plugin = async (opts) => {
 }
 
 if (require.main === module) {
-  plugin('http://www.freebuf.com/')
+  plugin({ url: 'http://www.baidu.com/', userAgent: 'whatsweb' })
     .then(res => console.log(JSON.stringify(res, null, 4)))
     .catch(err => console.log(err))
 }
