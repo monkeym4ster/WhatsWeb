@@ -20,6 +20,7 @@
     "chalk": "^2.3.0",
     "commander": "^2.13.0",
     "geoip-lite": "^1.2.1",
+    "globby": "^7.1.1",
     "ip": "^1.1.5",
     "progress": "^2.0.0",
     "superagent": "^3.8.2",

@@ -20,7 +20,7 @@ const plugin = async (opts) => {
 }
 
 if (require.main === module) {
-  plugin('http://www.freebuf.com/x-404')
+  plugin({ url: 'http://www.freebuf.com/x-404' })
     .then(res => console.log(JSON.stringify(res, null, 4)))
     .catch(err => console.log(err))
 }

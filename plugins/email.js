@@ -20,10 +20,11 @@ if (require.main === module) {
   .set('user-agent', 'WhatsWeb/0.0.1')
   .ok(() => true)
   .then(response => {
-    plugin(url, response)
+    plugin({ url, response })
       .then(res => console.log(JSON.stringify(res, null, 4)))
       .catch(err => console.log(err))
   })
+  .catch((err) => console.error('Request failed.', err))
 }
 
 exports.register = plugin
