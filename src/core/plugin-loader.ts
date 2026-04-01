@@ -1,5 +1,8 @@
 import { pluginMetaSchema } from "../plugins/types.ts";
 import type { Plugin } from "../plugins/types.ts";
+import { baseInfoPlugin } from "../plugins/base-info.ts";
+import { emailPlugin } from "../plugins/email.ts";
+import { geoipPlugin } from "../plugins/geoip.ts";
 
 export class PluginLoader {
   private plugins: Map<string, Plugin> = new Map();
@@ -29,6 +32,9 @@ export class PluginLoader {
 
   static withBuiltins(): PluginLoader {
     const loader = new PluginLoader();
+    loader.register(baseInfoPlugin);
+    loader.register(emailPlugin);
+    loader.register(geoipPlugin);
     return loader;
   }
 }
