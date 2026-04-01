@@ -1,6 +1,8 @@
 # WhatsWeb 重构计划：基于 Bun 的全面重构
 
 > 本文档描述了将 WhatsWeb 从旧版 Node.js + CommonJS 项目，全面迁移至 **Bun 运行时 + TypeScript + ESM** 的重构方案。
+>
+> **可执行的 SOP（标准操作流程）已拆分至 [`docs/sop/`](./docs/sop/README.md)**，AI Agent 可直接按 Phase 顺序执行重构。
 
 ---
 
@@ -59,14 +61,16 @@ WhatsWeb 是一个基于 Node.js 的网站指纹识别与安全扫描 CLI 工具
 | 语言 | JavaScript (ES6) | **TypeScript 5.x** | 类型安全、更好的 IDE 支持 |
 | 模块系统 | CommonJS | **ESM** | 现代标准、tree-shaking |
 | HTTP 客户端 | superagent | **Bun 原生 fetch** | 零依赖、Web 标准 API |
-| Promise 工具 | bluebird | **原生 Promise + 自定义并发控制** | bluebird 的 `Promise.map` 可用简单的并发池替代 |
-| CLI 框架 | commander@2 | **@commander-js/extra-typings** 或 **citty** | 带类型定义的现代 CLI 框架 |
-| 终端着色 | chalk@2 | **Bun 兼容的 chalk@5 (ESM)** 或 **picocolors** | picocolors 更轻量、零依赖 |
-| 进度条 | progress | **cli-progress** 或自定义实现 | 更现代的进度条库 |
+| 工具函数库 | 无 | **es-toolkit** | 替代 lodash — 2-3x 更快、97% 更小、原生 TS、完美 tree-shaking |
+| 并发管理 | bluebird | **p-limit@7** | 成熟（~100M 周下载）、ESM 原生、API 简洁 |
+| 数据验证 | 无 | **zod** | CLI 参数验证、插件结果验证、运行时 schema + 类型推断 |
+| CLI 框架 | commander@2 | **commander@12** | 成熟稳定、ESM 支持 |
+| 终端着色 | chalk@2 | **picocolors** | 零依赖、极小体积 |
+| 进度条 | progress | **cli-progress** | 更现代的进度条库 |
 | 文件匹配 | globby@7 | **Bun.Glob (内置)** | Bun 内置的 Glob API，零依赖 |
-| IP 处理 | ip@1 | **内置实现或 ipaddr.js** | ip 包存在已知安全漏洞 |
+| IP 处理 | ip@1 | **自定义实现** | ip 包存在已知安全漏洞 (CVE-2023-42282) |
 | GeoIP | geoip-lite | **geoip-lite** (保留) | 无更优替代，且功能稳定 |
-| 技术栈识别 | wappalyzer@5 | **Wappalyzer** (评估最新可用版本) | 旧版已弃用；需评估新版 API 兼容性 |
+| 技术栈识别 | wappalyzer@5 | **wappalyzer@6.10.66** | 使用 puppeteer 内核，支持 init/open/analyze/destroy 生命周期 |
 | 测试框架 | 无 | **Bun 内置测试 (`bun:test`)** | 零配置、原生支持 |
 | Lint | 无 | **Biome** | 比 ESLint 更快、Bun 生态推荐 |
 
@@ -415,23 +419,26 @@ export async function parseBlackList(filePath: string): Promise<ListRule> { /* .
 
 | 原依赖 | 状态 | 替换方案 | 说明 |
 |--------|------|----------|------|
-| `bluebird@^3.5.1` | **移除** | 原生 `Promise` + `src/utils/concurrency.ts` | `Promise.map` 和 `Promise.promisify` 不再需要 |
+| `bluebird@^3.5.1` | **移除** | **p-limit@7** | 成熟的并发控制（~100M 周下载）、ESM 原生 |
 | `superagent@^3.8.2` | **移除** | 原生 `fetch` + `src/utils/http.ts` | Bun 内置高性能 fetch |
-| `chalk@^2.3.0` | **替换** | `picocolors` 或 `chalk@5` (ESM) | picocolors 更轻量（无依赖、~3.5KB） |
-| `commander@^2.13.0` | **升级** | `commander@12` (最新版) | 支持 ESM 和 TypeScript |
-| `progress@^2.0.0` | **替换** | `cli-progress` 或自定义实现 | 更现代、支持更丰富的格式化 |
-| `globby@^7.1.1` | **移除** | `Bun.Glob` (内置) | 零依赖 |
+| `chalk@^2.3.0` | **替换** | **picocolors** | 零依赖、极小体积 |
+| `commander@^2.13.0` | **升级** | **commander@12** | 成熟稳定、ESM 支持 |
+| `progress@^2.0.0` | **替换** | **cli-progress** | 更现代的进度条库 |
+| `globby@^7.1.1` | **移除** | **Bun.Glob** (内置) | 零依赖 |
 | `ip@^1.1.5` | **移除** | 自定义实现 (`src/utils/ip.ts`) | ip 包存在 SSRF 安全漏洞 (CVE-2023-42282) |
-| `geoip-lite@^1.2.1` | **保留** | `geoip-lite` (最新版) | 无更优替代 |
-| `wappalyzer@^5.2.2` | **评估** | 评估 `wappalyzer` 最新版或 `wappalyzer-core` | 旧版已弃用 |
+| `geoip-lite@^1.2.1` | **保留** | **geoip-lite** (最新版) | 无更优替代 |
+| `wappalyzer@^5.2.2` | **升级** | **wappalyzer@6.10.66** | 最后功能版本，API: init/open/analyze/destroy |
 
 ### 新增依赖
 
 | 依赖 | 用途 |
 |------|------|
+| **es-toolkit** | 通用工具函数 — 替代 lodash，2-3x 更快、97% 更小、原生 TS |
+| **p-limit@7** | 并发控制 — 替代 bluebird.Promise.map |
+| **zod** | 运行时数据验证 + TypeScript 类型推断（CLI 参数、插件 meta、规则文件等） |
 | `picocolors` | 终端文本着色（零依赖、高性能） |
 | `commander@12` | CLI 参数解析 |
-| `@anthropic-ai/sdk` 或其他可选 | （未来扩展）AI 辅助指纹分析 |
+| `cli-progress` | 终端进度条 |
 
 ### 新增开发依赖
 
@@ -440,6 +447,8 @@ export async function parseBlackList(filePath: string): Promise<ListRule> { /* .
 | `typescript` | TypeScript 编译器（Bun 内置 TS 执行，但需要 tsc 做类型检查） |
 | `@biomejs/biome` | Lint + Format |
 | `@types/bun` | Bun 类型定义 |
+| `@types/cli-progress` | cli-progress 类型定义 |
+| `@types/geoip-lite` | geoip-lite 类型定义 |
 
 ---
 
@@ -600,57 +609,19 @@ bun test --coverage         # 覆盖率报告
 
 ## 9. 重构步骤与里程碑
 
-### 里程碑 1：基础设施搭建
+> **详细的可执行 SOP 已拆分至 [`docs/sop/`](./docs/sop/README.md)**，以下为概要索引。
 
-- [ ] 初始化 Bun 项目 (`bun init`)
-- [ ] 配置 `tsconfig.json`
-- [ ] 配置 `biome.json` (lint + format)
-- [ ] 配置 `bunfig.toml`
-- [ ] 搭建 `src/` 目录结构
-- [ ] 编写基础类型定义 (`src/types.ts`, `src/plugins/types.ts`)
-
-### 里程碑 2：工具层重构
-
-- [ ] 实现 `src/utils/url.ts` (URL 规范化)
-- [ ] 实现 `src/utils/dns.ts` (DNS 解析)
-- [ ] 实现 `src/utils/ip.ts` (CIDR IP 展开)
-- [ ] 实现 `src/utils/http.ts` (基于 fetch 的 HTTP 封装)
-- [ ] 实现 `src/utils/concurrency.ts` (并发控制池)
-- [ ] 编写对应的单元测试
-
-### 里程碑 3：插件系统重构
-
-- [ ] 定义插件接口和加载机制 (`src/core/plugin-loader.ts`)
-- [ ] 迁移 `base-info` 插件
-- [ ] 迁移 `email` 插件
-- [ ] 迁移 `geoip` 插件
-- [ ] 迁移 `wappalyzer` 插件（评估新版 API）
-- [ ] 迁移 `bbscan` 插件（拆分为三文件模块）
-- [ ] 编写插件单元测试
-
-### 里程碑 4：核心引擎重构
-
-- [ ] 实现 `src/core/scanner.ts` (核心扫描引擎)
-- [ ] 实现 `src/core/reporter.ts` (结果报告)
-- [ ] 编写核心引擎测试
-- [ ] 编写集成测试
-
-### 里程碑 5：CLI 与用户体验
-
-- [ ] 实现 `src/cli.ts` (CLI 入口)
-- [ ] 实现 `src/index.ts` (库入口导出)
-- [ ] 确保所有原有 CLI 选项兼容
-- [ ] 进度条和彩色输出
-- [ ] 端到端测试
-
-### 里程碑 6：收尾与发布
-
-- [ ] 全面测试通过
-- [ ] Lint 和格式化通过
-- [ ] 更新 `README.md`
-- [ ] 更新 `package.json` 元信息
-- [ ] 删除旧代码文件
-- [ ] 标签发布 v1.0.0
+| Phase | SOP | 说明 | 状态 |
+|-------|-----|------|------|
+| 1 | [phase-01-infrastructure.md](./docs/sop/phase-01-infrastructure.md) | 基础设施：Bun 初始化、TS/Biome 配置、目录骨架、基础类型 | ⬜ |
+| 2 | [phase-02-utils.md](./docs/sop/phase-02-utils.md) | 工具层 TDD：url、dns、ip、http + p-limit 封装 + Zod schema | ⬜ |
+| 3 | [phase-03-plugin-system.md](./docs/sop/phase-03-plugin-system.md) | 插件系统：类型定义（Zod）、PluginLoader | ⬜ |
+| 4 | [phase-04-basic-plugins.md](./docs/sop/phase-04-basic-plugins.md) | 基础插件 TDD：base-info、email、geoip + es-toolkit | ⬜ |
+| 5 | [phase-05-wappalyzer.md](./docs/sop/phase-05-wappalyzer.md) | Wappalyzer 插件：wappalyzer@6.10.66 集成 | ⬜ |
+| 6 | [phase-06-bbscan.md](./docs/sop/phase-06-bbscan.md) | BBScan 插件：规则解析器（Zod）+ 路径扫描器（p-limit） | ⬜ |
+| 7 | [phase-07-scanner.md](./docs/sop/phase-07-scanner.md) | 核心引擎：Scanner 类、Zod 参数验证 | ⬜ |
+| 8 | [phase-08-cli.md](./docs/sop/phase-08-cli.md) | CLI + Reporter：commander/picocolors/cli-progress/p-limit | ⬜ |
+| 9 | [phase-09-integration.md](./docs/sop/phase-09-integration.md) | 集成测试、旧文件清理、README 更新 | ⬜ |
 
 ---
 
@@ -658,12 +629,13 @@ bun test --coverage         # 覆盖率报告
 
 ### 10.1 Wappalyzer 兼容性
 
-**风险**: `wappalyzer@5` 已废弃，新版 API 可能完全不兼容。
+**风险**: `wappalyzer@6.10.66` 依赖 `puppeteer@~19.7.0`，需要 Chromium 运行环境。
 
 **应对**:
-- 评估 `wappalyzer` npm 包的最新版本
-- 如果新版不可用，考虑替代方案：`wappalyzer-core`（仅核心匹配逻辑）或自行实现基于 wappalyzer 规则文件的指纹匹配
-- 最坏情况：保留该插件为 "可选插件"，提供 stub 实现
+- 已确定使用 `wappalyzer@6.10.66`（v6 最后功能版本），API 为 `init → open → analyze → destroy`
+- v6 结果结构使用 `technologies[]`（不是 v5 的 `applications[]`），需注意字段差异
+- CI/部署环境需安装 Chromium 系统依赖（libX11、libatk 等），或使用 `--no-sandbox` 参数
+- 插件实现需确保 `finally` 块中调用 `wappalyzer.destroy()` 清理浏览器进程
 
 ### 10.2 Bun 的 Node.js 兼容性
 
