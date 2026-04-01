@@ -4,6 +4,7 @@ import { baseInfoPlugin } from "../plugins/base-info.ts";
 import { emailPlugin } from "../plugins/email.ts";
 import { geoipPlugin } from "../plugins/geoip.ts";
 import { wappalyzerPlugin } from "../plugins/wappalyzer.ts";
+import { bbscanPlugin } from "../plugins/bbscan/index.ts";
 
 export class PluginLoader {
   private plugins: Map<string, Plugin> = new Map();
@@ -37,6 +38,7 @@ export class PluginLoader {
     loader.register(emailPlugin);
     loader.register(geoipPlugin);
     loader.register(wappalyzerPlugin);
+    loader.register(bbscanPlugin);
     return loader;
   }
 }
