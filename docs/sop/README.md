@@ -41,15 +41,15 @@
 
 | Phase | SOP 文件 | 说明 | 状态 |
 |-------|----------|------|------|
-| 1 | [phase-01-infrastructure.md](./phase-01-infrastructure.md) | 基础设施搭建：初始化 Bun 项目、配置 TS/Biome、建目录骨架 | ⬜ 未开始 |
-| 2 | [phase-02-utils.md](./phase-02-utils.md) | 工具层 TDD：url、dns、ip、http 四个工具模块 + p-limit 封装 | ⬜ 未开始 |
-| 3 | [phase-03-plugin-system.md](./phase-03-plugin-system.md) | 插件系统：类型定义、插件加载器 | ⬜ 未开始 |
-| 4 | [phase-04-basic-plugins.md](./phase-04-basic-plugins.md) | 基础插件 TDD：base-info、email、geoip 三个插件 | ⬜ 未开始 |
-| 5 | [phase-05-wappalyzer.md](./phase-05-wappalyzer.md) | Wappalyzer 插件：基于 wappalyzer@6.10.66 的技术栈识别 | ⬜ 未开始 |
-| 6 | [phase-06-bbscan.md](./phase-06-bbscan.md) | BBScan 插件：规则解析器 + 路径扫描器 | ⬜ 未开始 |
-| 7 | [phase-07-scanner.md](./phase-07-scanner.md) | 核心引擎：Scanner 类（调度插件、聚合结果） | ⬜ 未开始 |
-| 8 | [phase-08-cli.md](./phase-08-cli.md) | CLI 与 Reporter：命令行入口、结果格式化与输出 | ⬜ 未开始 |
-| 9 | [phase-09-integration.md](./phase-09-integration.md) | 集成测试、旧文件清理、README 更新、发布 | ⬜ 未开始 |
+| 1 | [phase-01-infrastructure.md](./phase-01-infrastructure.md) | 基础设施搭建：初始化 Bun 项目、配置 TS/Biome、建目录骨架 | ✅ 已完成 (2026-04-01) |
+| 2 | [phase-02-utils.md](./phase-02-utils.md) | 工具层 TDD：url、dns、ip、http 四个工具模块 + p-limit 封装 | ✅ 已完成 (2026-04-01) |
+| 3 | [phase-03-plugin-system.md](./phase-03-plugin-system.md) | 插件系统：类型定义、插件加载器 | ✅ 已完成 (2026-04-01) |
+| 4 | [phase-04-basic-plugins.md](./phase-04-basic-plugins.md) | 基础插件 TDD：base-info、email、geoip 三个插件 | ✅ 已完成 (2026-04-01) |
+| 5 | [phase-05-wappalyzer.md](./phase-05-wappalyzer.md) | Wappalyzer 插件：基于 wappalyzer@6.10.66 的技术栈识别 | ✅ 已完成 (2026-04-01) |
+| 6 | [phase-06-bbscan.md](./phase-06-bbscan.md) | BBScan 插件：规则解析器 + 路径扫描器 | ✅ 已完成 (2026-04-01) |
+| 7 | [phase-07-scanner.md](./phase-07-scanner.md) | 核心引擎：Scanner 类（调度插件、聚合结果） | ✅ 已完成 (2026-04-01) |
+| 8 | [phase-08-cli.md](./phase-08-cli.md) | CLI 与 Reporter：命令行入口、结果格式化与输出 | ✅ 已完成 (2026-04-01) |
+| 9 | [phase-09-integration.md](./phase-09-integration.md) | 集成测试、旧文件清理、README 更新、发布 | ✅ 已完成 (2026-04-01) |
 
 ---
 
