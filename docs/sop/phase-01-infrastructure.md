@@ -1,8 +1,8 @@
 # Phase 1：基础设施搭建
 
 > **前置条件**：无
-> **产出物**：可运行 `bun test`（空测试通过）和 `bunx biome check`（无报错）的项目骨架
-> **预计涉及文件**：`package.json`, `tsconfig.json`, `biome.json`, `bunfig.toml`, 目录骨架, 基础类型定义
+> **产出物**：可运行 `bun test`（空测试通过）和 `bunx eslint`（无报错）的项目骨架
+> **预计涉及文件**：`package.json`, `tsconfig.json`, `eslint.config.mjs`, `.prettierrc`, 目录骨架, 基础类型定义
 
 ---
 
@@ -29,9 +29,10 @@ bun init -y
   "scripts": {
     "dev": "bun run src/cli.ts",
     "test": "bun test",
-    "lint": "bunx biome check src/",
-    "lint:fix": "bunx biome check --write src/",
-    "format": "bunx biome format --write src/",
+    "lint": "bunx eslint src/ tests/",
+    "lint:fix": "bunx eslint src/ tests/ --fix",
+    "format": "bunx prettier --write src/ tests/",
+    "format:check": "bunx prettier --check src/ tests/",
     "typecheck": "bunx tsc --noEmit"
   },
   "dependencies": {
@@ -45,7 +46,11 @@ bun init -y
     "wappalyzer": "6.10.66"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.0",
+    "eslint": "^10.1.0",
+    "@eslint/js": "^10.0.0",
+    "typescript-eslint": "^8.58.0",
+    "eslint-config-prettier": "^10.1.0",
+    "prettier": "^3.8.0",
     "@types/bun": "latest",
     "@types/cli-progress": "^3.11.0",
     "@types/geoip-lite": "^1.4.4",
@@ -86,28 +91,49 @@ bun install
 }
 ```
 
-### Step 1.3 — 配置 Biome
+### Step 1.3 — 配置 ESLint + Prettier
 
-创建 `biome.json`：
+创建 `eslint.config.mjs`（ESLint 9 flat config）：
 
-```jsonc
+```javascript
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
+
+export default tseslint.config(
+  { ignores: ["dist/", "node_modules/", "rules/"] },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+    },
+  },
+  eslintConfigPrettier, // 必须放最后，禁用与 Prettier 冲突的规则
+);
+```
+
+创建 `.prettierrc`：
+
+```json
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
-  "organizeImports": { "enabled": true },
-  "linter": {
-    "enabled": true,
-    "rules": { "recommended": true }
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 120
-  },
-  "files": {
-    "ignore": ["node_modules", "dist", "rules"]
-  }
+  "semi": true,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "endOfLine": "lf"
 }
+```
+
+创建 `.prettierignore`：
+
+```
+node_modules
+dist
+rules
+bun.lock
 ```
 
 ### Step 1.4 — 创建目录骨架
@@ -186,9 +212,10 @@ describe("项目骨架验证", () => {
 ### Step 1.7 — 验证
 
 ```bash
-bun test                       # 预期：2 个测试通过
-bunx biome check src/          # 预期：无错误
-bunx tsc --noEmit              # 预期：无类型错误（忽略尚未实现的模块）
+bun test                              # 预期：2 个测试通过
+bunx eslint src/                      # 预期：无错误
+bunx prettier --check src/            # 预期：无格式问题
+bunx tsc --noEmit                     # 预期：无类型错误
 ```
 
 ### Step 1.8 — 提交
@@ -204,7 +231,8 @@ git push
 ## 完成标志
 
 - [ ] `bun test` 通过
-- [ ] `bunx biome check src/` 无错误
+- [ ] `bunx eslint src/` 无错误
+- [ ] `bunx prettier --check src/` 无格式问题
 - [ ] 目录结构已按规划建立
 - [ ] `src/plugins/types.ts` 包含核心接口定义
 - [ ] 代码已提交并推送

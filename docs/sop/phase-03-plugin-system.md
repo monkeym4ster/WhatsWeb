@@ -167,7 +167,7 @@ export class PluginLoader {
 
 ```bash
 bun test tests/core/plugin-loader.test.ts
-bunx biome check src/core/ src/plugins/types.ts
+bunx eslint src/core/ src/plugins/types.ts
 ```
 
 ---

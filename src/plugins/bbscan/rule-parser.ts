@@ -44,7 +44,14 @@ export function parseRuleLine(line: string): ScanRule | null {
 
   const rootOnly = trimmed.includes("{root_only}");
 
-  const parsed = scanRuleSchema.safeParse({ uri, tag, status, contentType, contentTypeNo, rootOnly });
+  const parsed = scanRuleSchema.safeParse({
+    uri,
+    tag,
+    status,
+    contentType,
+    contentTypeNo,
+    rootOnly,
+  });
   return parsed.success ? parsed.data : null;
 }
 

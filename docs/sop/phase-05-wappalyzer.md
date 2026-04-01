@@ -235,7 +235,7 @@ expect(names).toContain("Wappalyzer");
 ```bash
 bun test tests/plugins/wappalyzer.test.ts
 bun test tests/core/plugin-loader.test.ts
-bunx biome check src/plugins/wappalyzer.ts
+bunx eslint src/plugins/wappalyzer.ts
 ```
 
 > **注意**：wappalyzer 测试依赖 puppeteer 能成功启动 Chromium。若 CI 环境缺少依赖（如 libX11、libatk 等），可能需要安装系统包或使用 `--no-sandbox` 参数。可在测试中增加 skip 条件。

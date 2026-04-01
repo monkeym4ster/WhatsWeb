@@ -129,12 +129,12 @@ bun test
 ## Step 9.2 — 全面 Lint 检查
 
 ```bash
-bunx biome check src/
-bunx biome check tests/
+bunx eslint src/ tests/
+bunx prettier --check src/ tests/
 bunx tsc --noEmit
 ```
 
-修复所有 lint 错误和类型错误。
+修复所有 lint 错误、格式问题和类型错误。
 
 ---
 
@@ -278,9 +278,10 @@ MIT
   "scripts": {
     "dev": "bun run src/cli.ts",
     "test": "bun test",
-    "lint": "bunx biome check src/",
-    "lint:fix": "bunx biome check --write src/",
-    "format": "bunx biome format --write src/",
+    "lint": "bunx eslint src/ tests/",
+    "lint:fix": "bunx eslint src/ tests/ --fix",
+    "format": "bunx prettier --write src/ tests/",
+    "format:check": "bunx prettier --check src/ tests/",
     "typecheck": "bunx tsc --noEmit",
     "build": "bun build src/cli.ts --outdir dist --target node",
     "prepublishOnly": "bun run typecheck && bun run lint && bun run test"
@@ -296,11 +297,15 @@ MIT
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.0",
+    "@eslint/js": "^10.0.0",
     "@types/bun": "latest",
     "@types/cli-progress": "^3.11.0",
     "@types/geoip-lite": "^1.4.4",
-    "typescript": "^5.5.0"
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.0",
+    "prettier": "^3.8.0",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.58.0"
   },
   "author": "M4ster <GeniusM4ster@gmail.com>",
   "repository": {
@@ -329,8 +334,10 @@ MIT
 bun test
 
 # 2. lint 无错误
-bunx biome check src/
-bunx biome check tests/
+bunx eslint src/ tests/
+
+# 2.5 格式一致
+bunx prettier --check src/ tests/
 
 # 3. 类型检查通过
 bunx tsc --noEmit
@@ -365,7 +372,8 @@ git push
 
 - [ ] `tests/integration/e2e.test.ts` 全部通过
 - [ ] `bun test` 全部测试通过（所有 Phase 的测试）
-- [ ] `bunx biome check src/ tests/` 无错误
+- [ ] `bunx eslint src/ tests/` 无错误
+- [ ] `bunx prettier --check src/ tests/` 格式一致
 - [ ] `bunx tsc --noEmit` 无类型错误
 - [ ] 旧文件（`index.js`, `whatsweb.js`, `utils.js`, `plugins/`）已删除
 - [ ] `rules/` 目录完好

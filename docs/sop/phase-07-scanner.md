@@ -281,7 +281,7 @@ export type { ScanResult, ScannerOptions } from "./core/scanner-schema.ts";
 ```bash
 bun test tests/core/scanner.test.ts
 bun test  # 确保所有测试仍通过
-bunx biome check src/core/
+bunx eslint src/core/
 ```
 
 ---

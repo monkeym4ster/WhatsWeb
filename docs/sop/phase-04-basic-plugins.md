@@ -354,7 +354,7 @@ test("加载所有内置插件", () => {
 ```bash
 bun test tests/plugins/base-info.test.ts tests/plugins/email.test.ts tests/plugins/geoip.test.ts
 bun test tests/core/plugin-loader.test.ts
-bunx biome check src/plugins/ src/core/
+bunx eslint src/plugins/ src/core/
 ```
 
 ---

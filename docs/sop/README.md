@@ -33,7 +33,8 @@
 | GeoIP | geoip-lite | 保留，无更优替代 |
 | 技术栈识别 | **wappalyzer@6.10.66** | 依赖 puppeteer@~19.7.0 |
 | 测试 | bun:test (内置) | 零配置 |
-| Lint/Format | Biome | 比 ESLint 更快 |
+| Lint | **ESLint 9** (flat config) + **typescript-eslint** | 代码质量检查 |
+| Format | **Prettier** | 代码格式化 |
 
 ---
 
@@ -41,7 +42,7 @@
 
 | Phase | SOP 文件 | 说明 | 状态 |
 |-------|----------|------|------|
-| 1 | [phase-01-infrastructure.md](./phase-01-infrastructure.md) | 基础设施搭建：初始化 Bun 项目、配置 TS/Biome、建目录骨架 | ✅ 已完成 (2026-04-01) |
+| 1 | [phase-01-infrastructure.md](./phase-01-infrastructure.md) | 基础设施搭建：初始化 Bun 项目、配置 TS/ESLint/Prettier、建目录骨架 | ✅ 已完成 (2026-04-01) |
 | 2 | [phase-02-utils.md](./phase-02-utils.md) | 工具层 TDD：url、dns、ip、http 四个工具模块 + p-limit 封装 | ✅ 已完成 (2026-04-01) |
 | 3 | [phase-03-plugin-system.md](./phase-03-plugin-system.md) | 插件系统：类型定义、插件加载器 | ✅ 已完成 (2026-04-01) |
 | 4 | [phase-04-basic-plugins.md](./phase-04-basic-plugins.md) | 基础插件 TDD：base-info、email、geoip 三个插件 | ✅ 已完成 (2026-04-01) |
@@ -89,7 +90,8 @@ whatsweb/
 ├── docs/sop/               # 本 SOP 文档
 ├── package.json
 ├── tsconfig.json
-├── biome.json
+├── eslint.config.mjs
+├── .prettierrc
 └── bunfig.toml
 ```
 
@@ -100,7 +102,8 @@ whatsweb/
 每个 Phase 完成后，执行 Agent 必须：
 
 1. 运行 `bun test` 确认所有测试通过
-2. 运行 `bunx biome check src/` 确认无 lint 错误
+2. 运行 `bunx eslint src/ tests/` 确认无 lint 错误
+3. 运行 `bunx prettier --check src/ tests/` 确认格式一致
 3. 将上方表格中对应 Phase 的状态从 `⬜ 未开始` 更新为 `✅ 已完成`
 4. 在表格状态列追加完成时间，格式：`✅ 已完成 (YYYY-MM-DD)`
 5. `git add . && git commit && git push`

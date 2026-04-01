@@ -62,7 +62,8 @@ export class BBScanner {
           if (rulePath.includes("{sub}")) rulePath = rulePath.replace(/{sub}/g, sub);
           if (rulePath.includes("{hostname_or_folder}"))
             rulePath = rulePath.replace(/{hostname_or_folder}/g, this.host);
-          if (rulePath.includes("{hostname}")) rulePath = rulePath.replace(/{hostname}/g, this.host);
+          if (rulePath.includes("{hostname}"))
+            rulePath = rulePath.replace(/{hostname}/g, this.host);
 
           const needBody = !!rule.tag;
           const fetchFn = needBody ? httpGet : httpHead;
@@ -73,13 +74,15 @@ export class BBScanner {
 
           const curContentType = res.headers["content-type"] ?? "";
 
-          if (needBody && ["html", "text"].includes(curContentType) && !res.text.length) return null;
+          if (needBody && ["html", "text"].includes(curContentType) && !res.text.length)
+            return null;
           if (curContentType.includes("image/")) return null;
 
           if (needBody && this.findInWhiteList(res.text)) return rulePath;
           if (needBody && this.findInBlackList(res.text)) return null;
 
-          if (curContentType.includes("application/json") && !rulePath.endsWith(".json")) return null;
+          if (curContentType.includes("application/json") && !rulePath.endsWith(".json"))
+            return null;
 
           if (res.status === 404) return null;
           if (rule.status && res.status !== rule.status && res.status !== 206) return null;

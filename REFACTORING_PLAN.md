@@ -72,7 +72,8 @@ WhatsWeb 是一个基于 Node.js 的网站指纹识别与安全扫描 CLI 工具
 | GeoIP | geoip-lite | **geoip-lite** (保留) | 无更优替代，且功能稳定 |
 | 技术栈识别 | wappalyzer@5 | **wappalyzer@6.10.66** | 使用 puppeteer 内核，支持 init/open/analyze/destroy 生命周期 |
 | 测试框架 | 无 | **Bun 内置测试 (`bun:test`)** | 零配置、原生支持 |
-| Lint | 无 | **Biome** | 比 ESLint 更快、Bun 生态推荐 |
+| Lint | 无 | **ESLint 9** (flat config) + **typescript-eslint** | 代码质量检查 |
+| Format | 无 | **Prettier** | 代码格式化 |
 
 ---
 
@@ -123,7 +124,8 @@ whatsweb/
 │       └── concurrency.test.ts
 ├── package.json
 ├── tsconfig.json
-├── biome.json                    # Biome lint/format 配置
+├── eslint.config.mjs             # ESLint 9 flat config
+├── .prettierrc                   # Prettier 配置
 ├── bunfig.toml                   # Bun 配置
 ├── README.md
 └── REFACTORING_PLAN.md           # 本文档
@@ -445,7 +447,8 @@ export async function parseBlackList(filePath: string): Promise<ListRule> { /* .
 | 依赖 | 用途 |
 |------|------|
 | `typescript` | TypeScript 编译器（Bun 内置 TS 执行，但需要 tsc 做类型检查） |
-| `@biomejs/biome` | Lint + Format |
+| `eslint` + `typescript-eslint` + `eslint-config-prettier` | Lint |
+| `prettier` | Format |
 | `@types/bun` | Bun 类型定义 |
 | `@types/cli-progress` | cli-progress 类型定义 |
 | `@types/geoip-lite` | geoip-lite 类型定义 |
@@ -567,9 +570,10 @@ bun test --coverage         # 覆盖率报告
   "scripts": {
     "dev": "bun run src/cli.ts",
     "test": "bun test",
-    "lint": "biome check src/",
-    "lint:fix": "biome check --write src/",
-    "format": "biome format --write src/",
+    "lint": "bunx eslint src/ tests/",
+    "lint:fix": "bunx eslint src/ tests/ --fix",
+    "format": "bunx prettier --write src/ tests/",
+    "format:check": "bunx prettier --check src/ tests/",
     "typecheck": "tsc --noEmit",
     "build": "bun build src/cli.ts --outdir dist --target node",
     "prepublishOnly": "bun run typecheck && bun run lint && bun run test"
@@ -613,7 +617,7 @@ bun test --coverage         # 覆盖率报告
 
 | Phase | SOP | 说明 | 状态 |
 |-------|-----|------|------|
-| 1 | [phase-01-infrastructure.md](./docs/sop/phase-01-infrastructure.md) | 基础设施：Bun 初始化、TS/Biome 配置、目录骨架、基础类型 | ⬜ |
+| 1 | [phase-01-infrastructure.md](./docs/sop/phase-01-infrastructure.md) | 基础设施：Bun 初始化、TS/ESLint/Prettier 配置、目录骨架、基础类型 | ⬜ |
 | 2 | [phase-02-utils.md](./docs/sop/phase-02-utils.md) | 工具层 TDD：url、dns、ip、http + p-limit 封装 + Zod schema | ⬜ |
 | 3 | [phase-03-plugin-system.md](./docs/sop/phase-03-plugin-system.md) | 插件系统：类型定义（Zod）、PluginLoader | ⬜ |
 | 4 | [phase-04-basic-plugins.md](./docs/sop/phase-04-basic-plugins.md) | 基础插件 TDD：base-info、email、geoip + es-toolkit | ⬜ |

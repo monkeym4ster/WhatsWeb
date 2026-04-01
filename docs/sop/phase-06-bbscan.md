@@ -346,7 +346,7 @@ loader.register(bbscanPlugin);
 ```bash
 bun test tests/plugins/bbscan/
 bun test tests/core/plugin-loader.test.ts
-bunx biome check src/plugins/bbscan/
+bunx eslint src/plugins/bbscan/
 ```
 
 ---

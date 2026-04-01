@@ -311,7 +311,8 @@ bun test tests/schemas/cli.test.ts
 bun test tests/core/reporter.test.ts
 bun test tests/cli.test.ts
 bun test  # 全部测试
-bunx biome check src/
+bunx eslint src/ tests/
+bunx prettier --check src/ tests/
 ```
 
 ---

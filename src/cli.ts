@@ -9,7 +9,6 @@ import pc from "picocolors";
 
 import { Reporter } from "./core/reporter.ts";
 import { Scanner } from "./core/scanner.ts";
-import type { ScanResult } from "./core/scanner.ts";
 import { cliOptionsSchema } from "./schemas/cli.ts";
 import { resolve4 } from "./utils/dns.ts";
 import { expandCIDR } from "./utils/ip.ts";
@@ -24,9 +23,19 @@ const program = new Command()
   .description("Identifies websites.")
   .argument("[urls...]", "Target URLs")
   .option("-f <file>", "Targets file path")
-  .option("-c, --concurrency <num>", "Concurrency limit", (v: string) => Math.abs(Number.parseInt(v)), 50)
+  .option(
+    "-c, --concurrency <num>",
+    "Concurrency limit",
+    (v: string) => Math.abs(Number.parseInt(v)),
+    50,
+  )
   .option("--network <mask>", "Scan all Target/MASK hosts")
-  .option("--timeout <ms>", "Request timeout in ms", (v: string) => Math.abs(Number.parseInt(v)), 10000)
+  .option(
+    "--timeout <ms>",
+    "Request timeout in ms",
+    (v: string) => Math.abs(Number.parseInt(v)),
+    10000,
+  )
   .option("--user-agent <string>", "Custom User-Agent", `Mozilla/5.0 ${pack.name}/${pack.version}`)
   .option("-o, --output <path>", "Output file path")
   .option("--show-error", "Show error message", false)
@@ -105,7 +114,10 @@ const program = new Command()
     let valid = 0;
 
     const bar = new SingleBar(
-      { format: "{valid} Hits({rate} Targets/s) | {value}/{total}({percentage}%) scanned in {duration}s, ETA: {eta}s" },
+      {
+        format:
+          "{valid} Hits({rate} Targets/s) | {value}/{total}({percentage}%) scanned in {duration}s, ETA: {eta}s",
+      },
       Presets.shades_classic,
     );
     bar.start(targets.length, 0, { valid: 0, rate: "N/A" });

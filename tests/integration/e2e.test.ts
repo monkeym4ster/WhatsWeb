@@ -65,7 +65,9 @@ describe("端到端集成测试", () => {
 
     const email = results.find((r) => r.name === "Email");
     expect(email).toBeDefined();
-    expect(email?.result.email).toEqual(expect.arrayContaining(["admin@test.com", "support@test.com"]));
+    expect(email?.result.email).toEqual(
+      expect.arrayContaining(["admin@test.com", "support@test.com"]),
+    );
 
     // Geolocation may return null for localhost (127.0.0.1 has no geo data)
     const geo = results.find((r) => r.name === "Geolocation");
@@ -79,10 +81,13 @@ describe("CLI 端到端", () => {
   test("扫描并输出到文件", async () => {
     const tmpFile = `/tmp/whatsweb-e2e-${Date.now()}.jsonl`;
 
-    const proc = Bun.spawn(["bun", "run", "src/cli.ts", baseUrl, "-o", tmpFile, "--timeout", "10000"], {
-      stdout: "pipe",
-      stderr: "pipe",
-    });
+    const proc = Bun.spawn(
+      ["bun", "run", "src/cli.ts", baseUrl, "-o", tmpFile, "--timeout", "10000"],
+      {
+        stdout: "pipe",
+        stderr: "pipe",
+      },
+    );
 
     await proc.exited;
 

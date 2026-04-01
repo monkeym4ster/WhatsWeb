@@ -37,8 +37,6 @@ describe("Reporter", () => {
 
     expect(existsSync(tmpFile)).toBe(true);
     const content = Bun.file(tmpFile);
-    const text = new Blob([content]).toString();
-    // Just verify file exists and is non-empty
     expect(content.size).toBeGreaterThan(0);
 
     unlinkSync(tmpFile);

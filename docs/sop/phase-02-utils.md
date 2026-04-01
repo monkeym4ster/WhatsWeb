@@ -488,7 +488,8 @@ if (isEmpty(result)) return null;
 ```bash
 bun test tests/utils/
 
-bunx biome check src/utils/
+bunx eslint src/utils/
+bunx prettier --check src/utils/
 ```
 
 ---
@@ -510,6 +511,7 @@ git push
 - [ ] `tests/utils/ip.test.ts` 全部通过
 - [ ] `tests/utils/http.test.ts` 全部通过
 - [ ] `tests/utils/concurrency.test.ts` 全部通过（基于 p-limit）
-- [ ] `bunx biome check src/utils/` 无错误
+- [ ] `bunx eslint src/utils/
+bunx prettier --check src/utils/` 无错误
 - [ ] 代码已提交并推送
 - [ ] `docs/sop/README.md` 中 Phase 2 状态已更新为 ✅

@@ -11,7 +11,11 @@ export interface HttpResponse {
   url: string;
 }
 
-async function doFetch(url: string, method: string, options: RequestOptions): Promise<HttpResponse> {
+async function doFetch(
+  url: string,
+  method: string,
+  options: RequestOptions,
+): Promise<HttpResponse> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), options.timeout);
 

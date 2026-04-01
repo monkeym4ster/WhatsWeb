@@ -1,5 +1,9 @@
 import { describe, test, expect } from "bun:test";
-import { parseRuleLine, parseRuleFiles, parseListFile } from "../../../src/plugins/bbscan/rule-parser.ts";
+import {
+  parseRuleLine,
+  parseRuleFiles,
+  parseListFile,
+} from "../../../src/plugins/bbscan/rule-parser.ts";
 
 describe("parseRuleLine", () => {
   test("解析完整规则行", () => {
@@ -28,7 +32,8 @@ describe("parseRuleLine", () => {
   });
 
   test("解析含 type_no 的行", () => {
-    const line = '/config/database.yml       {status=200}    {type_no="html"}  {tag="password"}    {root_only}';
+    const line =
+      '/config/database.yml       {status=200}    {type_no="html"}  {tag="password"}    {root_only}';
     const rule = parseRuleLine(line);
     expect(rule?.contentTypeNo).toBe("html");
     expect(rule?.tag).toBe("password");
@@ -60,7 +65,7 @@ describe("parseListFile", () => {
   });
 
   test("跳过空行和注释", () => {
-    const content = "# comment\n\n{text=\"valid\"}";
+    const content = '# comment\n\n{text="valid"}';
     const result = parseListFile(content);
     expect(result.texts).toEqual(["valid"]);
   });

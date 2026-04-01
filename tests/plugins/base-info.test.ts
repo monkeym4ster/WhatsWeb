@@ -27,7 +27,9 @@ describe("baseInfoPlugin", () => {
   });
 
   test("提取 <title> 标签", async () => {
-    const result = await baseInfoPlugin.execute(makeContext({ text: "<html><title>Hello World</title></html>" }));
+    const result = await baseInfoPlugin.execute(
+      makeContext({ text: "<html><title>Hello World</title></html>" }),
+    );
     expect(result?.title).toBe("Hello World");
   });
 
@@ -39,7 +41,9 @@ describe("baseInfoPlugin", () => {
   });
 
   test("无 title 时结果中不含 title 字段", async () => {
-    const result = await baseInfoPlugin.execute(makeContext({ text: "<html><body>No title</body></html>" }));
+    const result = await baseInfoPlugin.execute(
+      makeContext({ text: "<html><body>No title</body></html>" }),
+    );
     expect(result?.title).toBeUndefined();
   });
 

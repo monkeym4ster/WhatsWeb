@@ -10,9 +10,10 @@
   "scripts": {
     "dev": "bun run src/cli.ts",
     "test": "bun test",
-    "lint": "bunx biome check src/",
-    "lint:fix": "bunx biome check --write src/",
-    "format": "bunx biome format --write src/",
+    "lint": "bunx eslint src/ tests/",
+    "lint:fix": "bunx eslint src/ tests/ --fix",
+    "format": "bunx prettier --write src/ tests/",
+    "format:check": "bunx prettier --check src/ tests/",
     "typecheck": "bunx tsc --noEmit"
   },
   "dependencies": {
@@ -26,11 +27,15 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.0",
+    "@eslint/js": "^10.0.1",
     "@types/bun": "latest",
     "@types/cli-progress": "^3.11.0",
     "@types/geoip-lite": "^1.4.4",
-    "typescript": "^5.5.0"
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.58.0"
   },
   "author": "M4ster <GeniusM4ster@gmail.com>",
   "repository": {

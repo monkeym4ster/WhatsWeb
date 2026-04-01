@@ -26,7 +26,9 @@ describe("geoipPlugin", () => {
   });
 
   test("无法解析的域名应返回 null", async () => {
-    const result = await geoipPlugin.execute(makeContext("http://this-domain-does-not-exist-xyz123.invalid"));
+    const result = await geoipPlugin.execute(
+      makeContext("http://this-domain-does-not-exist-xyz123.invalid"),
+    );
     expect(result).toBeNull();
   });
 });
