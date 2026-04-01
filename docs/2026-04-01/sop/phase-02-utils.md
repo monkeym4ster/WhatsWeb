@@ -514,4 +514,4 @@ git push
 - [ ] `bunx eslint src/utils/
 bunx prettier --check src/utils/` 无错误
 - [ ] 代码已提交并推送
-- [ ] `docs/sop/README.md` 中 Phase 2 状态已更新为 ✅
+- [ ] `docs/2026-04-01/sop/README.md` 中 Phase 2 状态已更新为 ✅

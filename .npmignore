@@ -5,5 +5,7 @@ tests/
 docs/
 *.md
 !README.md
-biome.json
+eslint.config.mjs
+.prettierrc
+.prettierignore
 tsconfig.json

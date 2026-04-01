@@ -236,4 +236,4 @@ git push
 - [ ] 目录结构已按规划建立
 - [ ] `src/plugins/types.ts` 包含核心接口定义
 - [ ] 代码已提交并推送
-- [ ] `docs/sop/README.md` 中 Phase 1 状态已更新为 ✅
+- [ ] `docs/2026-04-01/sop/README.md` 中 Phase 1 状态已更新为 ✅

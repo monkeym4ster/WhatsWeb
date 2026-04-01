@@ -87,7 +87,7 @@ whatsweb/
 │   ├── utils/
 │   ├── plugins/
 │   └── core/
-├── docs/sop/               # 本 SOP 文档
+├── docs/2026-04-01/        # 重构文档 (计划 + SOP)
 ├── package.json
 ├── tsconfig.json
 ├── eslint.config.mjs

@@ -305,4 +305,4 @@ git push
 - [ ] `src/index.ts` 正确导出 Scanner 和相关类型
 - [ ] lint 无错误
 - [ ] 代码已提交并推送
-- [ ] `docs/sop/README.md` 中 Phase 7 状态已更新为 ✅
+- [ ] `docs/2026-04-01/sop/README.md` 中 Phase 7 状态已更新为 ✅

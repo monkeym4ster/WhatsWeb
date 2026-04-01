@@ -323,7 +323,7 @@ MIT
 
 ## Step 9.7 — 更新 SOP 进度
 
-更新 `docs/sop/README.md` 中所有 Phase 的状态为 ✅。
+更新 `docs/2026-04-01/sop/README.md` 中所有 Phase 的状态为 ✅。
 
 ---
 
@@ -380,5 +380,5 @@ git push
 - [ ] `README.md` 已更新
 - [ ] `package.json` 已更新为最终版
 - [ ] `.gitignore` 已更新
-- [ ] `docs/sop/README.md` 中所有 Phase 状态已更新为 ✅
+- [ ] `docs/2026-04-01/sop/README.md` 中所有 Phase 状态已更新为 ✅
 - [ ] 代码已提交并推送

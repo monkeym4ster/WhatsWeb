@@ -2,7 +2,7 @@
 
 > 本文档描述了将 WhatsWeb 从旧版 Node.js + CommonJS 项目，全面迁移至 **Bun 运行时 + TypeScript + ESM** 的重构方案。
 >
-> **可执行的 SOP（标准操作流程）已拆分至 [`docs/sop/`](./docs/sop/README.md)**，AI Agent 可直接按 Phase 顺序执行重构。
+> **可执行的 SOP（标准操作流程）已拆分至 [`sop/`](./sop/README.md)**，AI Agent 可直接按 Phase 顺序执行重构。
 
 ---
 
@@ -613,19 +613,19 @@ bun test --coverage         # 覆盖率报告
 
 ## 9. 重构步骤与里程碑
 
-> **详细的可执行 SOP 已拆分至 [`docs/sop/`](./docs/sop/README.md)**，以下为概要索引。
+> **详细的可执行 SOP 已拆分至 [`sop/`](./sop/README.md)**，以下为概要索引。
 
 | Phase | SOP | 说明 | 状态 |
 |-------|-----|------|------|
-| 1 | [phase-01-infrastructure.md](./docs/sop/phase-01-infrastructure.md) | 基础设施：Bun 初始化、TS/ESLint/Prettier 配置、目录骨架、基础类型 | ⬜ |
-| 2 | [phase-02-utils.md](./docs/sop/phase-02-utils.md) | 工具层 TDD：url、dns、ip、http + p-limit 封装 + Zod schema | ⬜ |
-| 3 | [phase-03-plugin-system.md](./docs/sop/phase-03-plugin-system.md) | 插件系统：类型定义（Zod）、PluginLoader | ⬜ |
-| 4 | [phase-04-basic-plugins.md](./docs/sop/phase-04-basic-plugins.md) | 基础插件 TDD：base-info、email、geoip + es-toolkit | ⬜ |
-| 5 | [phase-05-wappalyzer.md](./docs/sop/phase-05-wappalyzer.md) | Wappalyzer 插件：wappalyzer@6.10.66 集成 | ⬜ |
-| 6 | [phase-06-bbscan.md](./docs/sop/phase-06-bbscan.md) | BBScan 插件：规则解析器（Zod）+ 路径扫描器（p-limit） | ⬜ |
-| 7 | [phase-07-scanner.md](./docs/sop/phase-07-scanner.md) | 核心引擎：Scanner 类、Zod 参数验证 | ⬜ |
-| 8 | [phase-08-cli.md](./docs/sop/phase-08-cli.md) | CLI + Reporter：commander/picocolors/cli-progress/p-limit | ⬜ |
-| 9 | [phase-09-integration.md](./docs/sop/phase-09-integration.md) | 集成测试、旧文件清理、README 更新 | ⬜ |
+| 1 | [phase-01-infrastructure.md](./sop/phase-01-infrastructure.md) | 基础设施：Bun 初始化、TS/ESLint/Prettier 配置、目录骨架、基础类型 | ⬜ |
+| 2 | [phase-02-utils.md](./sop/phase-02-utils.md) | 工具层 TDD：url、dns、ip、http + p-limit 封装 + Zod schema | ⬜ |
+| 3 | [phase-03-plugin-system.md](./sop/phase-03-plugin-system.md) | 插件系统：类型定义（Zod）、PluginLoader | ⬜ |
+| 4 | [phase-04-basic-plugins.md](./sop/phase-04-basic-plugins.md) | 基础插件 TDD：base-info、email、geoip + es-toolkit | ⬜ |
+| 5 | [phase-05-wappalyzer.md](./sop/phase-05-wappalyzer.md) | Wappalyzer 插件：wappalyzer@6.10.66 集成 | ⬜ |
+| 6 | [phase-06-bbscan.md](./sop/phase-06-bbscan.md) | BBScan 插件：规则解析器（Zod）+ 路径扫描器（p-limit） | ⬜ |
+| 7 | [phase-07-scanner.md](./sop/phase-07-scanner.md) | 核心引擎：Scanner 类、Zod 参数验证 | ⬜ |
+| 8 | [phase-08-cli.md](./sop/phase-08-cli.md) | CLI + Reporter：commander/picocolors/cli-progress/p-limit | ⬜ |
+| 9 | [phase-09-integration.md](./sop/phase-09-integration.md) | 集成测试、旧文件清理、README 更新 | ⬜ |
 
 ---
 
