@@ -1,10 +1,10 @@
-import { pluginMetaSchema } from "../plugins/types.ts";
-import type { Plugin } from "../plugins/types.ts";
 import { baseInfoPlugin } from "../plugins/base-info.ts";
+import { bbscanPlugin } from "../plugins/bbscan/index.ts";
 import { emailPlugin } from "../plugins/email.ts";
 import { geoipPlugin } from "../plugins/geoip.ts";
+import { pluginMetaSchema } from "../plugins/types.ts";
+import type { Plugin } from "../plugins/types.ts";
 import { wappalyzerPlugin } from "../plugins/wappalyzer.ts";
-import { bbscanPlugin } from "../plugins/bbscan/index.ts";
 
 export class PluginLoader {
   private plugins: Map<string, Plugin> = new Map();

@@ -1,5 +1,5 @@
-import { z } from "zod";
 import path from "node:path";
+import { z } from "zod";
 
 export const scanRuleSchema = z.object({
   uri: z.string().startsWith("/"),

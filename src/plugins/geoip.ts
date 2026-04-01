@@ -1,6 +1,6 @@
 import geoip from "geoip-lite";
-import type { Plugin } from "./types.ts";
 import { resolve4 } from "../utils/dns.ts";
+import type { Plugin } from "./types.ts";
 
 export const geoipPlugin: Plugin = {
   meta: { name: "Geolocation" },

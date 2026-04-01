@@ -1,7 +1,7 @@
 import pLimit from "p-limit";
-import { httpHead, httpGet } from "../../utils/http.ts";
-import type { ScanRule, ListRule } from "./rule-parser.ts";
-import { parseRuleFiles, loadWhiteList, loadBlackList } from "./rule-parser.ts";
+import { httpGet, httpHead } from "../../utils/http.ts";
+import type { ListRule, ScanRule } from "./rule-parser.ts";
+import { loadBlackList, loadWhiteList, parseRuleFiles } from "./rule-parser.ts";
 
 export interface BBScannerOptions {
   url: string;
@@ -60,7 +60,8 @@ export class BBScanner {
         try {
           let rulePath = rule.uri;
           if (rulePath.includes("{sub}")) rulePath = rulePath.replace(/{sub}/g, sub);
-          if (rulePath.includes("{hostname_or_folder}")) rulePath = rulePath.replace(/{hostname_or_folder}/g, this.host);
+          if (rulePath.includes("{hostname_or_folder}"))
+            rulePath = rulePath.replace(/{hostname_or_folder}/g, this.host);
           if (rulePath.includes("{hostname}")) rulePath = rulePath.replace(/{hostname}/g, this.host);
 
           const needBody = !!rule.tag;

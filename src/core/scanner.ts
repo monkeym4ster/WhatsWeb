@@ -1,11 +1,14 @@
 import { z } from "zod";
+import type { PluginContext } from "../plugins/types.ts";
 import { httpGet } from "../utils/http.ts";
 import { normalizeUrl } from "../utils/url.ts";
 import { PluginLoader } from "./plugin-loader.ts";
-import type { PluginContext } from "../plugins/types.ts";
 
 export const scannerOptionsSchema = z.object({
-  target: z.string().min(1).transform((val) => normalizeUrl(val)),
+  target: z
+    .string()
+    .min(1)
+    .transform((val) => normalizeUrl(val)),
   timeout: z.number().positive().default(10000),
   userAgent: z.string().min(1).default("Mozilla/5.0 whatsweb/1.0.0"),
 });

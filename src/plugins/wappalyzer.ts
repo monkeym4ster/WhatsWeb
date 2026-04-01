@@ -4,7 +4,8 @@ export const wappalyzerPlugin: Plugin = {
   meta: { name: "Wappalyzer", description: "Technology fingerprinting (wappalyzer@6.10.66)" },
 
   async execute(ctx) {
-    let wappalyzer: any = null;
+    // biome-ignore lint/suspicious/noExplicitAny: wappalyzer has no type definitions
+    let wappalyzer: any = null; // eslint-disable-line
     try {
       const Wappalyzer = (await import("wappalyzer")).default;
 
