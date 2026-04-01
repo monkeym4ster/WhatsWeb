@@ -123,21 +123,24 @@ const program = new Command()
 
         const data = await scanner.analyse();
 
+        const printAboveBar = (msg: string) => {
+          process.stdout.write(`\x1b[2K\x1b[0G${msg}\n`);
+        };
+
         if (Array.isArray(data)) {
           valid++;
           reporter.appendJsonLine(normalizeUrl(target), data);
           const output = reporter.formatResult(normalizeUrl(target), data);
-          bar.increment(1, { valid });
           if (output.includes("[+]")) {
-            const elapsed = (Date.now() - startTime) / 1000;
-            const rate = ((bar.getProgress() * targets.length) / Math.max(elapsed, 0.1)).toFixed(1);
-            bar.update({ valid, rate });
-            bar.log(`${output}\n`);
+            printAboveBar(output);
           }
+          const elapsed = (Date.now() - startTime) / 1000;
+          const rate = elapsed > 0 ? (valid / elapsed).toFixed(1) : "N/A";
+          bar.increment(1, { valid, rate });
         } else {
           bar.increment(1, { valid });
           if (opts.showError && data instanceof Error) {
-            bar.log(`${reporter.formatError(normalizeUrl(target), data)}\n`);
+            printAboveBar(reporter.formatError(normalizeUrl(target), data));
           }
         }
       }),
